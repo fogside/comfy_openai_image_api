@@ -32,10 +32,9 @@ class OpenAIImageAPI:
                     "multiline": False,
                     "default": ""
                 }),
-                "model": (["dall-e-3", "gpt-image-1"],),
+                "model": (["gpt-image-1"],),
                 "size": (["1024x1024", "1536x1024", "1024x1536"],),
-                "dall_e_quality": (["standard", "hd"],),
-                "gpt_image_quality": (["low", "medium", "high"],),
+                "quality": (["low", "medium", "high"],),
             },
             "optional": {
                 "image": ("IMAGE",),
@@ -46,14 +45,11 @@ class OpenAIImageAPI:
     FUNCTION = "generate_image"
     CATEGORY = "image/OpenAI"
 
-    def generate_image(self, prompt, api_key, model, size, dall_e_quality, gpt_image_quality, image=None):
-        print(f"{RED}generate_image: {prompt}, {api_key}, {model}, {size}, {dall_e_quality}, {gpt_image_quality}, {image}{RESET}")
+    def generate_image(self, prompt, api_key, model, size, quality, image=None):
+        print(f"{RED}generate_image: {prompt}, {api_key}, {model}, {size}, {quality}, {image}{RESET}")
         
         # Initialize OpenAI client
         client = OpenAI(api_key=api_key)
-        
-        # Select the appropriate quality based on the model
-        quality = dall_e_quality if model == "dall-e-3" else gpt_image_quality
         
         try:
             if image is None or (isinstance(image, torch.Tensor) and image.numel() == 0):
