@@ -112,14 +112,10 @@ class OpenAIImageAPI:
             return (image_tensor,)
             
         except Exception as e:
-            print(f"{RED}Error calling OpenAI Image API: {str(e)}{RESET}")
-            # Return original image if available, otherwise return None
-            if image is not None:
-                return (image,)
-            else:
-                # Create an empty tensor (1x3x64x64) filled with zeros
-                empty_tensor = torch.zeros(1, 3, 64, 64)
-                return (empty_tensor,)
+            error_message = f"Error calling OpenAI Image API: {str(e)}"
+            print(f"{RED}{error_message}{RESET}")
+            # Raise an exception to signal the error to the ComfyUI frontend
+            raise RuntimeError(error_message) from e
 
 # A dictionary that contains all nodes you want to export with their names
 # NOTE: names should be globally unique
