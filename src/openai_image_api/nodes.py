@@ -46,7 +46,10 @@ class OpenAIImageAPI:
     CATEGORY = "image/OpenAI"
 
     def generate_image(self, prompt, api_key, model, size, quality, image=None):
-        print(f"{RED}generate_image: {prompt}, {api_key}, {model}, {size}, {quality}, {image}{RESET}")
+        # print(f"{RED}generate_image: {prompt}, {api_key}, {model}, {size}, {quality}, {image}{RESET}")
+
+        if api_key == "":
+            raise RuntimeError("API key is empty")
         
         # Initialize OpenAI client
         client = OpenAI(api_key=api_key)
@@ -112,8 +115,8 @@ class OpenAIImageAPI:
             return (image_tensor,)
             
         except Exception as e:
-            error_message = f"Error calling OpenAI Image API: {str(e)}"
-            print(f"{RED}{error_message}{RESET}")
+            error_message = f"{str(e)}"
+            print(f"{RED}Error calling OpenAI Image API: {error_message}{RESET}")
             # Raise an exception to signal the error to the ComfyUI frontend
             raise RuntimeError(error_message) from e
 
