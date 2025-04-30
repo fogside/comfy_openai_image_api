@@ -3,7 +3,7 @@ requires = ["setuptools>=70.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openai_image_api"
+name = "comfy_openai_image_api"
 version = "0.0.1"
 description = "A collection of custom nodes for ComfyUI"
 authors = [
