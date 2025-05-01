@@ -128,5 +128,5 @@ NODE_CLASS_MAPPINGS = {
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "OpenAI Image API": "OpenAI Image API using gpt-image-1, with image editing if image input is provided and image generation if no image input is provided"
+    "OpenAI Image API": "OpenAI Image API with gpt-image-1"
 }
