@@ -6,9 +6,13 @@ __all__ = [
     "WEB_DIRECTORY",
 ]
 
+REQUIRED_PACKAGES = {
+    "openai": ">=1.76.2",   
+}
+
 __author__ = """Xin"""
 __email__ = "unicough.github@gmail.com"
-__version__ = "0.0.1"
+__version__ = "0.0.4"
 
 from .src.openai_image_api.nodes import NODE_CLASS_MAPPINGS
 from .src.openai_image_api.nodes import NODE_DISPLAY_NAME_MAPPINGS
