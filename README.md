@@ -1,6 +1,6 @@
 # OpenAI Image API
 
-This custom node uses OpenAI Image API to generate image (if no input image is provided) or edit image (if input image is provided) with the latest gpt-image-1 model. To use it, you will need to provide your OpenAI API key. This makes the node to be friendly for situations where ComfyUi serves as API server, because you don't have to login like the official OpenAI GPT Image 1 node does.
+This custom node uses OpenAI Image API to generate image (if no input image is provided) or edit image (if input image is provided) with the latest gpt-image-1 model. To use it, you will need to provide your OpenAI API key. This makes the node to be friendly for situations where ComfyUI serves as API server, because you don't have to login like the official OpenAI GPT Image 1 node does.
 
 - Prompt only with no input image:
 ![Prompt only](images/prompt_only.png)
