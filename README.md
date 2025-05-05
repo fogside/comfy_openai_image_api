@@ -4,6 +4,10 @@ This custom node uses the OpenAI Image API (`gpt-image-1` model) to generate ima
 
 It requires your OpenAI API key to be set as an environment variable `OPENAI_API_KEY` in your ComfyUI environment. This method avoids exposing the key directly in the workflow and is suitable for server environments.
 
+> [!IMPORTANT]
+> Using OpenAI's image generation models often requires your OpenAI organization account to be verified and may require specific usage tiers to be active. If your account does not meet these requirements, this node may fail to generate images.
+> Please note that changes to account verification or usage tiers can take approximately 15 minutes to propagate through OpenAI's systems.
+
 ## Features
 
 - Generate images from text prompts.
