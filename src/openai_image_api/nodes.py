@@ -35,6 +35,7 @@ class OpenAIImageAPI:
             },
             "optional": {
                 "image": ("IMAGE",),
+                "mask": ("MASK",),
             }
         }
 
@@ -42,8 +43,8 @@ class OpenAIImageAPI:
     FUNCTION = "generate_image"
     CATEGORY = "image/OpenAI"
 
-    def generate_image(self, prompt, model, size, quality, image=None):
-        # print(f"{RED}generate_image: {prompt}, {model}, {size}, {quality}, {image}{RESET}")
+    def generate_image(self, prompt, model, size, quality, image=None, mask=None):
+        # print(f"{RED}generate_image: {prompt}, {model}, {size}, {quality}, {image}, {mask}{RESET}")
 
         # Read API key from environment variable
         api_key = os.getenv("OPENAI_API_KEY")
@@ -88,14 +89,44 @@ class OpenAIImageAPI:
                     img_byte_arr_value = img_byte_arr.getvalue()
                     images.append(("image_0.png", img_byte_arr_value))
                 
+                # Process mask if provided
+                mask_bytes = None
+                if mask is not None:
+                    if len(image.shape) != 4 or image.shape[0] != 1:
+                         raise RuntimeError("Mask input requires a single image input.")
+                    if mask.shape[1:3] != image.shape[1:3]:
+                        raise RuntimeError(f"Mask shape {mask.shape[1:3]} must match image shape {image.shape[1:3]}.")
+                    
+                    # Convert mask tensor to RGBA PIL Image
+                    mask_tensor_squeezed = mask.squeeze(0) # Remove batch dim
+                    height, width = mask_tensor_squeezed.shape
+                    
+                    # Create RGBA numpy array (H, W, C)
+                    # OpenAI expects transparent areas (alpha=0) to be inpainted.
+                    # ComfyUI mask is typically 1 for keep, 0 for replace.
+                    # So, alpha = 1 - comfy_mask
+                    rgba_mask_np = np.zeros((height, width, 4), dtype=np.uint8)
+                    rgba_mask_np[:, :, 3] = ((1.0 - mask_tensor_squeezed.cpu().numpy()) * 255).astype(np.uint8)
+                    
+                    mask_pil = Image.fromarray(rgba_mask_np, 'RGBA')
+                    
+                    # Convert PIL Image to bytes
+                    mask_byte_arr = io.BytesIO()
+                    mask_pil.save(mask_byte_arr, format='PNG')
+                    mask_bytes = mask_byte_arr.getvalue()
+
                 # Call edit API
-                result = client.images.edit(
-                    model=model,
-                    image=images,
-                    prompt=prompt,
-                    size=size,
-                    quality=quality
-                )
+                edit_args = {
+                    "model": model,
+                    "image": images[0][1], # Pass the single image bytes
+                    "prompt": prompt,
+                    "size": size,
+                    "quality": quality
+                }
+                if mask_bytes:
+                    edit_args["mask"] = mask_bytes
+                
+                result = client.images.edit(**edit_args)
             
             # Get the generated image
             image_base64 = result.data[0].b64_json

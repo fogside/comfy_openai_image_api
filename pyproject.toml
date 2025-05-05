@@ -13,7 +13,10 @@ readme = "README.md"
 license = {text = "MIT license"}
 classifiers = []
 dependencies = [
-
+    "numpy",
+    "torch",
+    "Pillow",
+    "openai>=1.0.0"
 ]
 
 [project.optional-dependencies]
