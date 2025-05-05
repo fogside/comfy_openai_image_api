@@ -118,13 +118,13 @@ class OpenAIImageAPI:
                 # Call edit API
                 edit_args = {
                     "model": model,
-                    "image": images[0][1], # Pass the single image bytes
+                    "image": images[0], # Pass the tuple (filename, image_bytes)
                     "prompt": prompt,
                     "size": size,
                     "quality": quality
                 }
                 if mask_bytes:
-                    edit_args["mask"] = mask_bytes
+                    edit_args["mask"] = ("mask.png", mask_bytes) # Pass as tuple (filename, mask_bytes)
                 
                 result = client.images.edit(**edit_args)
             
