@@ -5,6 +5,7 @@ import torch
 from PIL import Image
 import io
 from openai import OpenAI
+import os
 
 # ANSI escape codes for colors
 RED = "\033[91m"
@@ -28,10 +29,6 @@ class OpenAIImageAPI:
                     "multiline": True,
                     "default": "A beautiful image"
                 }),
-                "api_key": ("STRING", {
-                    "multiline": False,
-                    "default": ""
-                }),
                 "model": (["gpt-image-1"],),
                 "size": (["1024x1024", "1536x1024", "1024x1536"],),
                 "quality": (["low", "medium", "high"],),
@@ -45,11 +42,13 @@ class OpenAIImageAPI:
     FUNCTION = "generate_image"
     CATEGORY = "image/OpenAI"
 
-    def generate_image(self, prompt, api_key, model, size, quality, image=None):
-        # print(f"{RED}generate_image: {prompt}, {api_key}, {model}, {size}, {quality}, {image}{RESET}")
+    def generate_image(self, prompt, model, size, quality, image=None):
+        # print(f"{RED}generate_image: {prompt}, {model}, {size}, {quality}, {image}{RESET}")
 
-        if api_key == "":
-            raise RuntimeError("API key is empty")
+        # Read API key from environment variable
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("OPENAI_API_KEY environment variable not set")
         
         # Initialize OpenAI client
         client = OpenAI(api_key=api_key)
