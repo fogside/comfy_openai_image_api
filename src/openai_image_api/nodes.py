@@ -30,7 +30,7 @@ class OpenAIImageAPI:
                     "default": "A beautiful image"
                 }),
                 "model": (["gpt-image-1"],),
-                "size": (["1024x1024", "1536x1024", "1024x1536"],),
+                "size": (["auto", "1024x1024", "1536x1024", "1024x1536"], {"default": "auto"}),
                 "quality": (["low", "medium", "high"],),
             },
             "optional": {
@@ -57,6 +57,9 @@ class OpenAIImageAPI:
         try:
             if image is None or (isinstance(image, torch.Tensor) and image.numel() == 0):
                 # If no input image, use generate API
+                if size == "auto":
+                    raise RuntimeError("Size 'auto' is not supported for image generation (no input image). Please select a specific size.")
+                
                 result = client.images.generate(
                     model=model,
                     prompt=prompt,
@@ -120,9 +123,11 @@ class OpenAIImageAPI:
                     "model": model,
                     "image": images[0], # Pass the tuple (filename, image_bytes)
                     "prompt": prompt,
-                    "size": size,
                     "quality": quality
                 }
+                if size != "auto": # Only add size if not auto
+                    edit_args["size"] = size
+                    
                 if mask_bytes:
                     edit_args["mask"] = ("mask.png", mask_bytes) # Pass as tuple (filename, mask_bytes)
                 
